@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты поиска: {{ query }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="/" class="btn btn-outline-primary">← Новый поиск</a>
+</div>
+
+<div class="search-info mb-4">
+    <h2>Результаты поиска</h2>
+    <p class="text-muted">
+        Запрос: <strong>{{ query }}</strong>
+    </p>
+</div>
+
+{% if results %}
+    <p class="mb-3">Найдено статей: <span class="badge bg-primary">{{ results|length }}</span></p>
+    
+    {% for article in results %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">
+                {% if article.doi_url %}
+                    <a href="{{ article.doi_url }}" target="_blank" class="text-decoration-none">
+                        {{ article.title }}
+                    </a>
+                {% else %}
+                    {{ article.title }}
+                {% endif %}
+            </h5>
+            
+            <p class="text-muted mb-2">
+                {% if article.authors %}
+                    👤 {{ article.authors[:3]|join(', ') }}
+                    {% if article.authors|length > 3 %} и др.{% endif %}
+                {% endif %}
+                {% if article.year %}
+                    | 📅 {{ article.year }}
+                {% endif %}
+                {% if article.cited_by_count %}
+                    | 📊 Цитирований: {{ article.cited_by_count }}
+                {% endif %}
+                {% if article.open_access %}
+                    | 🔓 Open Access
+                {% endif %}
+            </p>
+            
+            {% if article.abstract %}
+            <p class="card-text">
+                <small>{{ article.abstract }}</small>
+            </p>
+            {% endif %}
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-secondary">{{ article.type }}</span>
+                {% if article.doi_url %}
+                <a href="{{ article.doi_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    📄 Читать статью
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+{% else %}
+    <div class="alert alert-warning">
+        <h4>😕 Статьи не найдены</h4>
+        <p>По вашему запросу ничего не найдено. Попробуйте:</p>
+        <ul>
+            <li>Изменить формулировку запроса</li>
+            <li>Использовать более общие термины</li>
+            <li>Проверить запрос на английском языке</li>
+        </ul>
+    </div>
+{% endif %}
+
+{% if processed_query.keywords %}
+<div class="mt-4">
+    <h6>Ключевые слова:</h6>
+    {% for keyword in processed_query.keywords %}
+        <span class="badge bg-info me-1">{{ keyword }}</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск научных статей{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="text-center mb-5">
+            <h1 class="display-4">🔬 Поиск научных статей</h1>
+            <p class="lead">Используйте AI для поиска релевантных научных публикаций</p>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <div class="card shadow">
+            <div class="card-body">
+                <form action="/search" method="POST">
+                    <div class="mb-3">
+                        <label for="query" class="form-label">Поисковый запрос</label>
+                        <textarea 
+                            class="form-control" 
+                            id="query" 
+                            name="query" 
+                            rows="3" 
+                            placeholder="Например: влияние искусственного интеллекта на медицину в последние годы"
+                        ></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            🔍 Искать статьи
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <div class="text-muted">
+                    <h6>Примеры запросов:</h6>
+                    <ul>
+                        <li>machine learning in healthcare 2023</li>
+                        <li>climate change impact on biodiversity</li>
+                        <li>quantum computing applications</li>
+                        <li>нейронные сети в обработке изображений</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

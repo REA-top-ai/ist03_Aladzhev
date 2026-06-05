@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}История поиска{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="/" class="btn btn-outline-primary">← Вернуться к поиску</a>
+</div>
+
+<h2>📋 История поисковых запросов</h2>
+
+{% if searches.items %}
+    <p class="text-muted">
+        Всего запросов: {{ searches.total }}
+    </p>
+    
+    <div class="row">
+        {% for search in searches.items %}
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="/history/{{ search.id }}" class="text-decoration-none">
+                            {{ search.original_query[:100] }}{% if search.original_query|length > 100 %}...{% endif %}
+                        </a>
+                    </h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            📅 {{ search.search_date.strftime('%d.%m.%Y %H:%M') }}
+                        </small>
+                        <br>
+                        <span class="badge bg-primary">{{ search.results_count }} результатов</span>
+                    </p>
+                    <a href="/history/{{ search.id }}" class="btn btn-sm btn-outline-info">
+                        👁️ Просмотреть результаты
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Пагинация -->
+    {% if searches.pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if searches.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('history', page=searches.prev_num) }}">← Назад</a>
+            </li>
+            {% endif %}
+            
+            {% for page_num in searches.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    <li class="page-item {% if page_num == searches.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if searches.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('history', page=searches.next_num) }}">Вперед →</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+{% else %}
+    <div class="alert alert-info">
+        <h4>📭 История поиска пуста</h4>
+        <p>Выполните первый поиск, и он появится здесь!</p>
+        <a href="/" class="btn btn-primary">🔍 Перейти к поиску</a>
+    </div>
+{% endif %}
+
+{% endblock %}

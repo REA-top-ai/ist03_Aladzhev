@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты поиска: {{ search.original_query[:50] }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="/history" class="btn btn-outline-primary">← К истории</a>
+    <a href="/" class="btn btn-outline-secondary">🔍 Новый поиск</a>
+</div>
+
+<div class="card mb-4 shadow">
+    <div class="card-body">
+        <h3>Информация о запросе</h3>
+        <p><strong>Оригинальный запрос:</strong> {{ search.original_query }}</p>
+        <p><strong>Дата поиска:</strong> {{ search.search_date.strftime('%d.%m.%Y %H:%M') }}</p>
+        <p><strong>Найдено результатов:</strong> {{ search.results_count }}</p>
+    </div>
+</div>
+
+<h3>📄 Найденные статьи ({{ articles|length }})</h3>
+
+{% if articles %}
+    {% for article in articles %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">
+                {% if article.doi_url %}
+                    <a href="{{ article.doi_url }}" target="_blank" class="text-decoration-none">
+                        {{ article.title }}
+                    </a>
+                {% else %}
+                    {{ article.title }}
+                {% endif %}
+            </h5>
+            
+            <p class="text-muted mb-2">
+                {% if article.authors_list %}
+                    👤 {{ article.authors_list[:3]|join(', ') }}
+                    {% if article.authors_list|length > 3 %} и др.{% endif %}
+                {% endif %}
+                {% if article.publication_year %}
+                    | 📅 {{ article.publication_year }}
+                {% endif %}
+                {% if article.cited_by_count %}
+                    | 📊 Цитирований: {{ article.cited_by_count }}
+                {% endif %}
+                {% if article.is_open_access %}
+                    | 🔓 Open Access
+                {% endif %}
+            </p>
+            
+            {% if article.abstract %}
+            <p class="card-text">
+                <small>{{ article.abstract[:300] }}{% if article.abstract|length > 300 %}...{% endif %}</small>
+            </p>
+            {% endif %}
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-secondary">{{ article.publication_type }}</span>
+                {% if article.doi_url %}
+                <a href="{{ article.doi_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    📄 Читать статью
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-warning">
+        <p>По этому запросу не сохранилось результатов.</p>
+    </div>
+{% endif %}
+
+{% endblock %}
