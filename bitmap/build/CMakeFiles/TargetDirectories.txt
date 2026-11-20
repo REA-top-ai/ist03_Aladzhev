@@ -1,0 +1,3 @@
+/home/coder/workspace/bitmap/build/CMakeFiles/bitmap.dir
+/home/coder/workspace/bitmap/build/CMakeFiles/edit_cache.dir
+/home/coder/workspace/bitmap/build/CMakeFiles/rebuild_cache.dir
